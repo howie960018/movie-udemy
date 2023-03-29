@@ -1,10 +1,26 @@
 import React from "react";
-import { Form } from "antd";
+import { Form,message } from "antd";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
+import { LoginUser } from "../../apicalls/users";
 import { Link } from "react-router-dom";
 function Login() {
-  const onFinish = (values) => {
-    console.log("success",values);
+  const onFinish = async (values) => {
+    try {
+      
+      const response = await LoginUser(values);
+      
+      if (response.success) {
+        message.success(response.message);
+        localStorage.setItem("token", response.data);
+        window.location.href = "/";
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      
+      message.error(error.message);
+    }
   }
   
 
@@ -33,7 +49,7 @@ function Login() {
           </Form.Item>
 
           <div className="flex flex-col mt-2 gap-1">
-            <Button fullwidth title="REGISTER" type="submit" />
+            <Button fullwidth title="LOGIN" type="submit" />
             <Link to='/register'
             className="text-primary">
               {" "}
